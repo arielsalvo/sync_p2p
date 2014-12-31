@@ -37,36 +37,36 @@ char* config_filename;
 
 static void show_help(char** argv) {
     printf(
-        "IW Sync_P2P Server v 0.1\n\n"
-        "  -h            Muestra esta ayuda.\n"
-        "  -c <archivo>  Especifica el archivo de configuracion (Path absoluto).\n"
-        "Uso:\n"
-        "   %s -c file.cfg\n",
-        argv[0]
-    );
+            "IW Sync_P2P Server v 0.1\n\n"
+            "  -h            Muestra esta ayuda.\n"
+            "  -c <archivo>  Especifica el archivo de configuracion (Path absoluto).\n"
+            "Uso:\n"
+            "   %s -c file.cfg\n",
+            argv[0]
+          );
     exit(EXIT_SUCCESS);
 }
 
 
 static int parse_arguments(int argc, char** argv) {
-	int c;
-	while((c = getopt(argc, argv, "hc:")) != -1) {
-		switch(c) {
-			case 'h':
-				show_help(argv);
-				break;
-			case 'c':
-				config_filename = strdup(optarg);
-				fprintf(stdout, "[*] Archivo de configuracion: %s\n", config_filename);
-				break;
-			case '?':
-				fprintf(stderr, "[!] Opcion invalida\n");
-				return -1;
-			default:
-				return -1;
-		}
-	}
-	return 0;
+    int c;
+    while((c = getopt(argc, argv, "hc:")) != -1) {
+        switch(c) {
+            case 'h':
+                show_help(argv);
+                break;
+            case 'c':
+                config_filename = strdup(optarg);
+                fprintf(stdout, "[*] Archivo de configuracion: %s\n", config_filename);
+                break;
+            case '?':
+                fprintf(stderr, "[!] Opcion invalida\n");
+                return -1;
+            default:
+                return -1;
+        }
+    }
+    return 0;
 }
 
 int known_clients_load(char* known_clients_json) {
@@ -76,8 +76,8 @@ int known_clients_load(char* known_clients_json) {
 
     json = json_load_file(known_clients_json, 0, &error);
     if(!json) {
-    	printf("error: on line %d: %s\n", error.line, error.text);
-    	return 1;
+        printf("error: on line %d: %s\n", error.line, error.text);
+        return 1;
     }
     if(!json_is_array(json)) {
         printf("error: json is not an array\n");
@@ -88,35 +88,35 @@ int known_clients_load(char* known_clients_json) {
     int i, size;
     size = json_array_size(json);
     if (size > 10) {
-    	size = 10;
+        size = 10;
     }
     for(i = 0; i < size; i++) {
-    	json_t *data, *ip, *port;
-    	const char* ip_text;
-    	int port_int;
+        json_t *data, *ip, *port;
+        const char* ip_text;
+        int port_int;
 
-    	data = json_array_get(json, i);
-    	if(!json_is_object(data)) {
-        	printf("error: commit data %d is not an object\n", i + 1);
-        	json_decref(json);
-        	return 1;
-    	}
+        data = json_array_get(json, i);
+        if(!json_is_object(data)) {
+            printf("error: commit data %d is not an object\n", i + 1);
+            json_decref(json);
+            return 1;
+        }
 
-    	ip = json_object_get(data, "ip");
-    	if(!json_is_string(ip)) {
-        	printf("error: data %d: ip is not a string\n", i + 1);
-        	json_decref(json);
-        	return 1;
-    	}
-    	port = json_object_get(data, "port");
-    	if(!json_is_string(ip)) {
-        	printf("error: data %d: port is not a string\n", i + 1);
-        	json_decref(json);
-        	return 1;
-    	}
-    	ip_text = json_string_value(ip);
-    	port_int = json_integer_value(port);
-    	server.known_clients[i].ip = strdup(ip_text);
+        ip = json_object_get(data, "ip");
+        if(!json_is_string(ip)) {
+            printf("error: data %d: ip is not a string\n", i + 1);
+            json_decref(json);
+            return 1;
+        }
+        port = json_object_get(data, "port");
+        if(!json_is_string(ip)) {
+            printf("error: data %d: port is not a string\n", i + 1);
+            json_decref(json);
+            return 1;
+        }
+        ip_text = json_string_value(ip);
+        port_int = json_integer_value(port);
+        server.known_clients[i].ip = strdup(ip_text);
         server.known_clients[i].port = port_int;
     }
     json_decref(json);
@@ -140,14 +140,14 @@ int config_load (char* config_filename) {
         server_known_clients_json = config_lookup(&cfg, "server.known_clients_json");
 
         server.name = strdup(config_setting_get_string(server_name));
-        server.sync_dir = strdup(config_setting_get_string(server_sync_dir));   
-        server.server_port = strdup(config_setting_get_string(server_port));   
+        server.sync_dir = strdup(config_setting_get_string(server_sync_dir));
+        server.server_port = strdup(config_setting_get_string(server_port));
         return known_clients_load((char *)config_setting_get_string(server_known_clients_json));
         config_destroy(&cfg);
-    } else { 
+    } else {
         return 1;
         config_destroy(&cfg);
-        }
+    }
 }
 
 int main(int argc, char** argv) {
@@ -161,23 +161,23 @@ int main(int argc, char** argv) {
     pipe(pipe_fds);
 
     /*TODO: Antes del fork() tenemos que
-         config_load() donde cargamos toda la conf y alguna magia...
-         signals_initialize() Manejador de signals
-         server_parse_arguments(argc, argv) (Tenemos?)
-         Iniciar el file_system_reader() (?)
-    */
+      config_load() donde cargamos toda la conf y alguna magia...
+      signals_initialize() Manejador de signals
+      server_parse_arguments(argc, argv) (Tenemos?)
+      Iniciar el file_system_reader() (?)
+      */
     if (parse_arguments(argc, argv) == -1) {
-    	fprintf(stderr, "[!] Error parseando argumentos.\n");
-    	return EXIT_FAILURE;
+        fprintf(stderr, "[!] Error parseando argumentos.\n");
+        return EXIT_FAILURE;
     }
     //config_filename = CONFIG_FILE_PATH;
     if (config_load(config_filename) == 1) {
-    	fprintf(stderr, "[!] Error parseando archivo de configuracion.\n");
-    	return EXIT_FAILURE;
+        fprintf(stderr, "[!] Error parseando archivo de configuracion.\n");
+        return EXIT_FAILURE;
     }
     if (signals_initialize() == -1) {
-    	fprintf(stderr, "[!] Error iniciando los manejadores de signals.\n");
-    	return EXIT_FAILURE;
+        fprintf(stderr, "[!] Error iniciando los manejadores de signals.\n");
+        return EXIT_FAILURE;
     }
     //server.name = "IW Test Server";
     server.status = SERVER_STATUS_INACTIVE;
@@ -202,20 +202,20 @@ int main(int argc, char** argv) {
     // Para comunicar los dos usamos un pipe.
 
     if (pid == 0) { //CHILD
-         printf(
-        		 "[*] HIJO Creado, iniciando cliente (PID=%d)\n:"
-        		 " Esperando datos en el PIPE...\n", getpid()
-        );
-         // Cerramos el fd del pipe para escribir
-         close(pipe_fds[1]);
-         downloader_init_stack();
+        printf(
+                "[*] HIJO Creado, iniciando cliente (PID=%d)\n:"
+                " Esperando datos en el PIPE...\n", getpid()
+              );
+        // Cerramos el fd del pipe para escribir
+        close(pipe_fds[1]);
+        downloader_init_stack();
     } else { //PARENT
         printf("[*] Iniciando server(PID=%d)\n", getpid());
         // Cerramos el fd para leer
         close(pipe_fds[0]);
         if (server_init_stack() == -1) {
             fprintf(stderr, "[!] Problemas al iniciar el servidor\n");
-	        //TODO: Avisar al hijo que algo salio mal(?)
+            //TODO: Avisar al hijo que algo salio mal(?)
         }
         // Antes de salir esperamos al otro hijo!
         waitpid(pid, NULL, 0);
