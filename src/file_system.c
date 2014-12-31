@@ -43,7 +43,7 @@ void _list_dir(const char *dir_name, int *size) {
 			//Allocate a new node_s and add it to the array
 			tmp = (FileInfo *)malloc(sizeof(FileInfo));
 			tmp->filename = ep->d_name;
-			char *path = malloc(len_dir_name + strlen(ep->d_name) + 2);
+			char *path = (char *)malloc(len_dir_name + strlen(ep->d_name) + 2);
 			//Concatenation
 			strncpy(path, dir_name, len_dir_name);
 			strncat(path, ep->d_name, strlen(ep->d_name));

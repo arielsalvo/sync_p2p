@@ -69,32 +69,6 @@ static int parse_arguments(int argc, char** argv) {
 	return 0;
 }
 
-int config_load (char* config_filename) {
-    //Vars para el archivos de configuracion
-    config_t cfg;
-    config_setting_t *server_name = 0;
-    config_setting_t *server_port = 0;
-    config_setting_t *server_sync_dir = 0;
-    config_setting_t *server_known_clients_json = 0;
-
-    config_init(&cfg);
-    if (config_read_file(&cfg, config_filename) == CONFIG_TRUE) {
-        server_name = config_lookup(&cfg, "server.name");
-        server_port = config_lookup(&cfg, "server.port");
-        server_sync_dir = config_lookup(&cfg, "server.sync_dir");
-        server_known_clients_json = config_lookup(&cfg, "server.known_clients_json");
-
-        server.name = strdup(config_setting_get_string(server_name));
-        server.sync_dir = strdup(config_setting_get_string(server_sync_dir));   
-        server.server_port = strdup(config_setting_get_string(server_port));   
-        return known_clients_load(config_setting_get_string(server_known_clients_json));
-        config_destroy(&cfg);
-    } else { 
-        return 1;
-        config_destroy(&cfg);
-        }
-}
-
 int known_clients_load(char* known_clients_json) {
     /*TODO Arreglar l manera que manejamos los errores*/
     json_t *json;
@@ -150,6 +124,32 @@ int known_clients_load(char* known_clients_json) {
 }
 
 
+int config_load (char* config_filename) {
+    //Vars para el archivos de configuracion
+    config_t cfg;
+    config_setting_t *server_name = 0;
+    config_setting_t *server_port = 0;
+    config_setting_t *server_sync_dir = 0;
+    config_setting_t *server_known_clients_json = 0;
+
+    config_init(&cfg);
+    if (config_read_file(&cfg, config_filename) == CONFIG_TRUE) {
+        server_name = config_lookup(&cfg, "server.name");
+        server_port = config_lookup(&cfg, "server.port");
+        server_sync_dir = config_lookup(&cfg, "server.sync_dir");
+        server_known_clients_json = config_lookup(&cfg, "server.known_clients_json");
+
+        server.name = strdup(config_setting_get_string(server_name));
+        server.sync_dir = strdup(config_setting_get_string(server_sync_dir));   
+        server.server_port = strdup(config_setting_get_string(server_port));   
+        return known_clients_load((char *)config_setting_get_string(server_known_clients_json));
+        config_destroy(&cfg);
+    } else { 
+        return 1;
+        config_destroy(&cfg);
+        }
+}
+
 int main(int argc, char** argv) {
     pid_t pid;
     // Inicializamos el chunk de memoria
@@ -187,7 +187,7 @@ int main(int argc, char** argv) {
     //server.known_clients[2] = "192.168.1.13";
 
     //Generar la lista de files a synquear
-    server.files = malloc(500);
+    server.files = (char *)malloc(500);
     list_dir(server.sync_dir);
     serialize_files(server.files);
 

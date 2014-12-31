@@ -17,12 +17,12 @@ static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int
 tasks_initialize() {
-	int i;
+    size_t i;
     //Set the limit of session allowed!
-    tasks = calloc(max_tasks, sizeof(Task *));
+    tasks = (Task **)calloc(max_tasks, sizeof(Task *));
 
     if(tasks == NULL) {
-		perror("taks_initialize():");
+		perror("tasks_initialize():");
 		return -1;
     }
     for(i=0; i < max_tasks; i++) {
@@ -34,7 +34,7 @@ tasks_initialize() {
 
 int
 task_add(Task* task) {
-	int i;
+	size_t i;
 	fprintf(stderr, "task_add()\n");
 	pthread_mutex_lock(&mutex);
 	for(i=0; i < max_tasks; i++) {
@@ -53,7 +53,7 @@ task_add(Task* task) {
 Task *
 task_get() {
 	Task* task_aux;
-	int i;
+	size_t i;
 	fprintf(stderr, "task_get()\n");
 	pthread_mutex_lock(&mutex);
 	task_aux = NULL;

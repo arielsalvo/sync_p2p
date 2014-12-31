@@ -39,7 +39,8 @@ void downloader_worker_thread(void *worker_data) {
 *
 */
 void client_broadcast_nodes() {
-    int sd_node, node_size, i;
+    int sd_node, node_size;
+    uint i;
     //Este no va, es para probar
     uint16_t code;
     struct sockaddr_in node;

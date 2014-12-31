@@ -12,28 +12,28 @@
 * Crea una session
 */
 Session* create_session() {
-    Session* new;
+    Session* newSession;
     // alocamos memoria
-    new = SESSION_NEW();
+    newSession = SESSION_NEW();
     // Iniciamos los campos
-    new->fd = -1;
-    new->ip = "";
-    new->filename = "";
-    new->offset = 0;
-    new->total = 0;
+    newSession->fd = -1;
+    newSession->ip[0] = 0;
+    newSession->filename[0] = 0;
+    newSession->offset = 0;
+    newSession->total = 0;
 
-    return new;
+    return newSession;
 }
 
 /*
 * Agrega una session al inicio de la lista
 */
 SessionList* add_session(SessionList* list, Session* session) {
-    SessionList* new;
-    new = SESSIONLIST_NEW();
-    new->session = session;
-    new->next = list;
-    list = new;
+    SessionList* newSessionList;
+    newSessionList = SESSIONLIST_NEW();
+    newSessionList->session = session;
+    newSessionList->next = list;
+    list = newSessionList;
     return list;
 }
 

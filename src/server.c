@@ -29,6 +29,7 @@ extern int pipe_fds[2];
 void handle_message(int sd, uint16_t message_code, char * message) {
     Session * ses;
     ses = get_session(sessions, sd);
+    char * big_buffer;
 
     printf("Cliente IP: %s, Codigo: %u, Mensaje: %s\n", ses->ip, message_code, message);
     // Aca esta el dispatcher
@@ -36,7 +37,7 @@ void handle_message(int sd, uint16_t message_code, char * message) {
     switch (message_code) {
         case REQUEST_LIST:
             printf("El cliente %d solicita la lista de archivos\n", sd);
-            char * big_buffer = malloc(PIPE_SIZE); // Esto hay que moverlo de aca, alocamos al pedo!!!
+            big_buffer = (char *)malloc(PIPE_SIZE); // Esto hay que moverlo de aca, alocamos al pedo!!!
             // Escribimos en el pipe el IP y la lista de archivos del cliente
             // separados por @. Ejemplo: 192.168.1.102@file1;file2;file3;...;fileN;
 

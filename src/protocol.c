@@ -21,7 +21,7 @@ int read_n_bytes(int sd, void *buffer, int n) {
     dev   = 1;
     done = 0;
     while ((done < n) && (dev != 0)) {
-        dev = recv(sd, buffer+done, (n-done) , 0);
+        dev = recv(sd, (void *)((char *)buffer+done), (n-done) , 0);
         if (dev < 0) {
              perror("read_n_bytes recv");
              exit(EXIT_FAILURE);
